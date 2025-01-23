@@ -224,7 +224,7 @@ class TasksController extends Controller
     // ==================== destroy Function ==================================
     // =========================Created By :Ahmad Abdulmonem Obeidat ==========
     // ========================================================================
-    public function destroy($id)
+    public function destroy(Task $task)
     {
         try {
             $user = Auth::guard('user')->user();
@@ -232,8 +232,6 @@ class TasksController extends Controller
             if (!$user) {
                 return redirect()->route('login')->with('danger', 'You must be logged in to delete tasks.');
             }
-
-            $task = Task::find($id);
 
             if (!$task || $task->user_id !== $user->id) {
                 return redirect()->back()->with('danger', 'This task does not belong to you.');
