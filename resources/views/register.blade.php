@@ -30,6 +30,31 @@
                     <div class="card-body">
                         <h2 class="text-center fw-bold mb-4">Register</h2>
                         <form action="{{ route('storeUser') }}" method="POST">
+
+                            {{-- Display Global Error Messages --}}
+                            @if (session('success'))
+                                <div class="alert alert-success">
+                                    {{ session('success') }}
+                                </div>
+                            @endif
+
+                            @if (session('danger'))
+                                <div class="alert alert-danger">
+                                    {{ session('danger') }}
+                                </div>
+                            @endif
+
+                            {{-- Display Validation Errors --}}
+                            @if ($errors->any())
+                                <div class="alert alert-danger">
+                                    <ul>
+                                        @foreach ($errors->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
+
                             @csrf
                             <!-- Name -->
                             <div class="mb-3">
@@ -49,15 +74,22 @@
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
-                            <!-- Password -->
+                            <!-- Password Field -->
                             <div class="mb-3">
                                 <label for="password" class="form-label">Password</label>
                                 <input type="password" name="password" id="password" class="form-control"
-                                    placeholder="Enter your password" required>
+                                    placeholder="Enter a strong password" required minlength="8"
+                                    pattern="(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+"
+                                    title="Password must be at least 8 characters long, with a mix of uppercase, lowercase, numbers, and symbols.">
+                                <div class="form-text">
+                                    Password must be at least 8 characters long and include uppercase, lowercase, numbers,
+                                    and symbols & Confrirmed.
+                                </div>
                                 @error('password')
                                     <small class="text-danger">{{ $message }}</small>
                                 @enderror
                             </div>
+
                             <!-- Confirm Password -->
                             <div class="mb-3">
                                 <label for="password_confirmation" class="form-label">Confirm Password</label>
