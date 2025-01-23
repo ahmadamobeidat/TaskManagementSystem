@@ -19,7 +19,7 @@ return new class extends Migration
             $table->date('due_date');
             $table->unsignedTinyInteger('status')->comment('1->To Do', '2->In Progress', '3->Completed')->default(1);
             $table->unsignedTinyInteger('priority')->comment('1->High', '2->Medium', '3->Low')->default(2);
-            $table->softDeletes();
+            // $table->softDeletes();
 
             // Foreign key constraint
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');

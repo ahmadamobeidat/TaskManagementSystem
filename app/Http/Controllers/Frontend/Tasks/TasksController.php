@@ -101,7 +101,6 @@ class TasksController extends Controller
         }
     }
 
-
     // ========================================================================
     // ======================= Search Function ================================
     // ========================================================================
@@ -213,7 +212,6 @@ class TasksController extends Controller
         }
     }
 
-
     // ========================================================================
     // ======================= create Function ================================
     // =========================Created By :Ahmad Abdulmonem Obeidat ==========
@@ -221,8 +219,56 @@ class TasksController extends Controller
     public function create()
     {
         try {
+
+            // Ensure only authenticated users can access this
+            if (!auth()->guard('user')->check()) {
+                return redirect()->route('login')->with('danger', 'You must be logged in to create a task.');
+            }
             // Get the authenticated user
             return view('tasks.create');
+        } catch (\Throwable $th) {
+            // Log the error for debugging purposes
+            Log::error('Error in TasksController@index: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            // Redirect to a generic error page with an error message
+            return redirect()->route('welcome')->with('danger', 'Something went wrong. Please try again later.');
+        }
+    }
+
+    // ========================================================================
+    // ==================== Delete Other Attachments Function =================
+    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ========================================================================
+    public function destroy($id, Route $route)
+    {
+        try {
+            // Find the lead transaction by ID
+
+            // Get the authenticated user
+            $user = Auth::guard('user')->user();
+
+            if (!$user) {
+                return redirect()->route('login')->with('danger', 'You must be logged in to view tasks.');
+            }
+
+            $task = Task::find($id);
+
+            // Ensure only the authenticated user can modify their tasks
+            if ($task->user_id !== auth()->guard('user')->user()->id) {
+                return redirect()->back()->with('danger', 'This record is not yours to manuipulate.');
+            }
+
+            if ($task) {
+                // Finally, delete the lead transaction
+                $task->delete();
+
+                return redirect()->back()->with('success', 'Deleted Successfully');
+            } else {
+                return redirect()->back()->with('danger', 'This record does not exist in the records');
+            }
         } catch (\Throwable $th) {
             // Log the error for debugging purposes
             Log::error('Error in TasksController@index: ' . $th->getMessage(), [
