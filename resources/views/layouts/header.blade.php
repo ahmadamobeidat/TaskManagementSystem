@@ -18,7 +18,8 @@
                     <a href="#" class="text-white">
                         <i class="fas fa-bell" style="font-size: 1.5rem;"></i>
                         <!-- Notification Count Badge -->
-                        <span id="task-reminder-count" class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        <span id="task-reminder-count"
+                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             0
                         </span>
                     </a>
@@ -28,6 +29,7 @@
 
                 <a href="{{ route('myProfile.userProfile') }}" class="btn btn-outline-light fw-bold me-2">My Profile</a>
 
+                {{-- log out  --}}
                 <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
                     @csrf
                     <button type="submit" class="btn btn-outline-light fw-bold me-2">Logout</button>

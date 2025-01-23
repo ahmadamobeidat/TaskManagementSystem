@@ -45,6 +45,7 @@
                             </tr>
                             <tr>
                                 <th class="text-muted">Date of Birth:</th>
+
                                 <td>{{ $user->date_of_birth }}</td>
                             </tr>
                             <tr>
@@ -72,7 +73,9 @@
                         </div>
                         <hr>
                         <div class="text-center mt-4">
-                            <a href="#" class="btn btn-primary">Edit Profile</a>
+                            <a href="{{ route('myProfile.editUserProfile') }}" class="btn btn-primary">Edit Profile</a>
+
+                            {{-- logout --}}
                             <form action="{{ route('logout') }}" method="POST" class="d-inline">
                                 @csrf
                                 <button type="submit" class="btn btn-danger">Logout</button>
@@ -113,61 +116,3 @@
         </div>
     </div>
 @endsection
-
-<style>
-    body {
-        background-color: #f8f9fa;
-        font-family: 'Roboto', Arial, sans-serif;
-    }
-
-    .card {
-        border-radius: 15px;
-        overflow: hidden;
-        margin-bottom: 20px;
-    }
-
-    .card-header {
-        font-size: 1.5rem;
-        padding: 15px;
-        border-bottom: none;
-    }
-
-    .profile-picture {
-        width: 120px;
-        height: 120px;
-        border-radius: 50%;
-        border: 3px solid #dee2e6;
-    }
-
-    .table th {
-        width: 40%;
-        font-weight: 600;
-        color: #6c757d;
-    }
-
-    .table td {
-        text-align: left;
-        font-weight: 500;
-        color: #495057;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        border: none;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-        color: white;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        border: none;
-    }
-
-    .btn-danger:hover {
-        background-color: #a71d2a;
-        color: white;
-    }
-</style>

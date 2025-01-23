@@ -40,8 +40,9 @@ Route::middleware(['auth.user'])->group(function () {
 
     // myProfile routes
     Route::prefix('myProfile')->name('myProfile.')->group(function () {
-        Route::get('/userProfile', [MyProfileController::class, 'userProfile'])->name('userProfile'); // View Profile
-        Route::put('updateProfile/{id}', [MyProfileController::class, 'updateProfile'])->name('updateProfile');
+        Route::get('/userProfile', [MyProfileController::class, 'userProfile'])->name('userProfile');
+        Route::get('/editUserProfile', [MyProfileController::class, 'editUserProfile'])->name('editUserProfile');
+        Route::put('updateProfile', [MyProfileController::class, 'updateUserProfile'])->name('updateProfile');
     });
 
     // Task Management Routes
