@@ -58,16 +58,16 @@
                             <h5 class="text-muted mb-3">Your Stats</h5>
                             <div class="row text-center">
                                 <div class="col">
-                                    <h6 class="fw-bold text-primary">1</h6>
+                                    <h6 class="fw-bold text-primary">{{ $completedTasks ?? 0 }}</h6>
                                     <p class="text-muted">Tasks Completed</p>
                                 </div>
                                 <div class="col">
-                                    <h6 class="fw-bold text-warning">5</h6>
-                                    <p class="text-muted">Pending Tasks</p>
+                                    <h6 class="fw-bold text-warning">{{ $inProgressTasks ?? 0 }}</h6>
+                                    <p class="text-muted">In Progress Tasks</p>
                                 </div>
                                 <div class="col">
-                                    <h6 class="fw-bold text-success">6</h6>
-                                    <p class="text-muted">Total Tasks</p>
+                                    <h6 class="fw-bold text-success">{{ $toDoTasks ?? 0 }}</h6>
+                                    <p class="text-muted">To Do</p>
                                 </div>
                             </div>
                         </div>

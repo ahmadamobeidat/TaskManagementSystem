@@ -11,17 +11,6 @@
         <!-- Action Buttons -->
         <div class="d-flex align-items-center">
             @auth('user')
-                <!-- Bell Icon with Notification -->
-                <div class="position-relative me-3">
-                    <a href="#" class="text-white" style="text-decoration: none;">
-                        <i class="fas fa-bell" style="font-size: 1.5rem;"></i>
-                        <span id="task-reminder-count"
-                            class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                            0
-                        </span>
-                    </a>
-                </div>
-
                 <!-- Welcome Message -->
                 <span class="text-white fw-bold me-3">
                     Welcome, {{ Auth::guard('user')->user()->name }}

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Frontend\MyProfile;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Frontend\Auth\UpdateUserFormRequest;
+use App\Models\Task;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,8 +23,22 @@ class MyProfileController extends Controller
             // Get the authenticated user
             $user = Auth::guard('user')->user();
 
+            $completedTasks = Task::where('status', 3)
+                ->where('user_id', $user->id)
+                ->count();
+
+            $toDoTasks = Task::where('status', 1)
+                ->where('user_id', $user->id)
+                ->count();
+
+
+            $inProgressTasks = Task::where('status', 2)
+                ->where('user_id', $user->id)
+                ->count();
+
+
             // Pass user data to the profile view
-            return view('myProfile.myprofile', compact('user'));
+            return view('myProfile.myprofile', compact('user', 'completedTasks', 'toDoTasks', 'inProgressTasks'));
         } catch (\Throwable $th) {
             // Log the error for debugging purposes
             Log::error('Error in userProfile Function: ' . $th->getMessage(), [
