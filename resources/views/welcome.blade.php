@@ -30,7 +30,11 @@
                 <p class="lead mt-3">
                     Organize your tasks, boost your productivity, and achieve your goals effortlessly.
                 </p>
-                <a href="{{ route('register') }}" class="btn btn-dark fw-bold px-4 py-2 mt-4">Get Started</a>
+                @auth('user')
+                    <a href="{{ route('tasks.index') }}" class="btn btn-dark fw-bold px-4 py-2 mt-4">Tasks</a>
+                @else
+                    <a href="{{ route('register') }}" class="btn btn-dark fw-bold px-4 py-2 mt-4">Get Started</a>
+                @endauth
             </div>
         </section>
 
@@ -91,12 +95,15 @@
 
 
         <!-- Call-to-Action Section -->
-        <section class="py-5 text-center" style="background-color: white;">
-            <h2 class="mb-3" style="color: black;">Ready to take control of your tasks?</h2>
-            <p class="mb-4" style="color: black;">
-                Join our growing community and make task management easier than ever!
-            </p>
-            <a href="#" class="btn btn-dark">Sign Up Now</a>
-        </section>
+        @auth('user')
+        @else
+            <section class="py-5 text-center" style="background-color: white;">
+                <h2 class="mb-3" style="color: black;">Ready to take control of your tasks?</h2>
+                <p class="mb-4" style="color: black;">
+                    Join our growing community and make task management easier than ever!
+                </p>
+                <a href="{{ route('register') }}" class="btn btn-dark">Sign Up Now</a>
+            </section>
+        @endauth
     </div>
 @endsection

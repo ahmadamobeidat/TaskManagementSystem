@@ -4,7 +4,6 @@
         <nav class="d-flex">
             <a href="{{ route('welcome') }}" class="nav-link text-white fw-bold px-3">Home</a>
             @auth('user')
-                <a href="#" class="nav-link text-white fw-bold px-3">Dashboard</a>
                 <a href="{{ route('tasks.index') }}" class="nav-link text-white fw-bold px-3">Tasks</a>
             @endauth
         </nav>

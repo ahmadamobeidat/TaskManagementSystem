@@ -25,11 +25,94 @@
     {{-- =========================================================== --}}
     {{-- ================== Tasks Section ========================== --}}
     {{-- =========================================================== --}}
-    <h1 class="text-center mb-4">Your Tasks</h1>
-
     <div class="container my-5">
+        {{-- Search --}}
+        <div class="col-md-12 groove-container">
+            <label>
+                <h2>Search Section</h2>
+            </label>
+            <br>
+            <form action="{{ route('tasks.search') }}" method="GET" class="row g-3" id="searchForm">
+                {{-- Title --}}
+                <div class="col-md-2">
+                    <label for="title" class="form-label">Title</label>
+                    <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title"
+                        value="{{ $searchValues['title'] ?? '' }}" placeholder="Title">
+                    @error('title')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Description --}}
+                <div class="col-md-3">
+                    <label for="description" class="form-label">Description</label>
+                    <input type="text" name="description" class="form-control @error('description') is-invalid @enderror"
+                        id="description" value="{{ $searchValues['description'] ?? '' }}" placeholder="Description">
+                    @error('description')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Status Dropdown --}}
+                <div class="col-md-2">
+                    <label for="status" class="form-label">Status</label>
+                    <select name="status" id="status" class="form-select @error('status') is-invalid @enderror">
+                        <option value="">All</option>
+                        <option value="1" @selected(isset($searchValues['status']) && $searchValues['status'] == 1)>To Do</option>
+                        <option value="2" @selected(isset($searchValues['status']) && $searchValues['status'] == 2)>In Progress</option>
+                        <option value="3" @selected(isset($searchValues['status']) && $searchValues['status'] == 3)>Completed</option>
+                    </select>
+                    @error('status')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Priority Dropdown --}}
+                <div class="col-md-2">
+                    <label for="priority" class="form-label">Priority</label>
+                    <select name="priority" id="priority" class="form-select @error('priority') is-invalid @enderror">
+                        <option value="">All</option>
+                        <option value="1" @selected(isset($searchValues['priority']) && $searchValues['priority'] == 1)>High</option>
+                        <option value="2" @selected(isset($searchValues['priority']) && $searchValues['priority'] == 2)>Medium</option>
+                        <option value="3" @selected(isset($searchValues['priority']) && $searchValues['priority'] == 3)>Low</option>
+                    </select>
+                    @error('priority')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Due Date --}}
+                <div class="col-md-3">
+                    <label for="due_date" class="form-label">Due Date</label>
+                    <input type="date" name="due_date" id="due_date" class="form-control @error('due_date') is-invalid @enderror"
+                        value="{{ $searchValues['due_date'] ?? '' }}">
+                    @error('due_date')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                </div>
+
+                {{-- Search Button --}}
+                <div class="col-md-12 text-end">
+                    <button type="submit" class="btn btn-primary">Search</button>
+                </div>
+            </form>
+
+        </div>
+
+        <br>
+        <h1 class="text-center mb-4">My Tasks</h1>
+
 
         {{-- Tasks Table --}}
+        {{-- Create --}}
+        <div class="dropdown me-2">
+            <a href="{{ route('tasks.create') }}" class="btn btn-dark">
+                <i data-feather="plus" class="fill-white feather-sm"></i>Add New Task
+            </a>
+        </div>
+
+        <br>
+
         <div>
             <table class="table table-bordered table-hover align-middle">
                 <thead class="table-dark text-center">
@@ -134,13 +217,64 @@
             </table>
 
             <div class="d-flex justify-content-center">
-                {{ $tasks->links() }}
+                <nav aria-label="Page navigation">
+                    <ul class="pagination">
+                        @if ($tasks->onFirstPage())
+                            <li class="page-item disabled">
+                                <span class="page-link">Previous</span>
+                            </li>
+                        @else
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $tasks->previousPageUrl() }}" aria-label="Previous">
+                                    <span aria-hidden="true">&laquo; Previous</span>
+                                </a>
+                            </li>
+                        @endif
+
+                        @foreach ($tasks->getUrlRange(1, $tasks->lastPage()) as $page => $url)
+                            <li class="page-item {{ $tasks->currentPage() == $page ? 'active' : '' }}">
+                                <a class="page-link" href="{{ $url }}">{{ $page }}</a>
+                            </li>
+                        @endforeach
+
+                        @if ($tasks->hasMorePages())
+                            <li class="page-item">
+                                <a class="page-link" href="{{ $tasks->nextPageUrl() }}" aria-label="Next">
+                                    <span aria-hidden="true">Next &raquo;</span>
+                                </a>
+                            </li>
+                        @else
+                            <li class="page-item disabled">
+                                <span class="page-link">Next</span>
+                            </li>
+                        @endif
+                    </ul>
+                </nav>
             </div>
         </div>
     </div>
 @endsection
 
 <style>
+    .pagination .page-item.active .page-link {
+        background-color: #007bff;
+        /* Bootstrap Primary Color */
+        border-color: #007bff;
+        color: #fff;
+    }
+
+    .pagination .page-link {
+        color: #007bff;
+        /* Text Color */
+    }
+
+    .pagination .page-link:hover {
+        background-color: #e9ecef;
+        /* Light Grey Background */
+        color: #0056b3;
+        /* Darker Blue Text */
+    }
+
     .table-hover tbody tr:hover {
         background-color: #f8f9fa;
     }

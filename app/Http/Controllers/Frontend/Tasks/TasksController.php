@@ -5,12 +5,18 @@ namespace App\Http\Controllers\Frontend\Tasks;
 use App\Http\Controllers\Controller;
 use App\Models\Task;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Route;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class TasksController extends Controller
 {
 
+    // ========================================================================
+    // ======================= index Function =================================
+    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ========================================================================
     public function index()
     {
         try {
@@ -38,6 +44,48 @@ class TasksController extends Controller
         }
     }
 
+    // ========================================================================
+    // ======================= updatePriority Function ========================
+    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ========================================================================
+    public function updatePriority(Request $request)
+    {
+        $request->validate([
+            'task_id' => 'required|exists:tasks,id',
+            'priority' => 'required|in:1,2,3', // Validate priority values
+        ]);
+
+        try {
+            $task = Task::findOrFail($request->task_id);
+            $task->priority = $request->priority; // Update priority
+            $task->save();
+
+            return response()->json(['success' => true, 'message' => 'Priority updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update priority']);
+        }
+    }
+
+    // ========================================================================
+    // ======================= create Function ================================
+    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ========================================================================
+    public function create()
+    {
+        try {
+            // Get the authenticated user
+            return view('tasks.create');
+        } catch (\Throwable $th) {
+            // Log the error for debugging purposes
+            Log::error('Error in TasksController@index: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            // Redirect to a generic error page with an error message
+            return redirect()->route('welcome')->with('danger', 'Something went wrong. Please try again later.');
+        }
+    }
 
     // ========================================================================
     // ======================= updateStatus Function ==========================
@@ -61,26 +109,127 @@ class TasksController extends Controller
         }
     }
 
-
     // ========================================================================
-    // ======================= updatePriority Function ========================
+    // =========================== Store Function =============================
     // =========================Created By :Ahmad Abdulmonem Obeidat ==========
     // ========================================================================
-    public function updatePriority(Request $request)
+    public function store(Request $request)
     {
-        $request->validate([
-            'task_id' => 'required|exists:tasks,id',
-            'priority' => 'required|in:1,2,3', // Validate priority values
-        ]);
-
         try {
-            $task = Task::findOrFail($request->task_id);
-            $task->priority = $request->priority; // Update priority
-            $task->save();
+            // Ensure only authenticated users can access this
+            if (!auth()->guard('user')->check()) {
+                return redirect()->route('login')->with('danger', 'You must be logged in to create a task.');
+            }
 
-            return response()->json(['success' => true, 'message' => 'Priority updated successfully']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to update priority']);
+            // Validate the request data
+            $validated = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'nullable|string',
+                'due_date' => 'required|date',
+                'status' => 'required|in:1,2,3', // Assuming 1=To Do, 2=In Progress, 3=Completed
+                'priority' => 'required|in:1,2,3', // Assuming 1=High, 2=Medium, 3=Low
+            ]);
+
+            // Add the authenticated user's ID to the task data
+            $created_data = array_merge($validated, [
+                'user_id' => auth()->guard('user')->user()->id,
+            ]);
+
+            // Use a database transaction to ensure data consistency
+            DB::transaction(function () use ($created_data) {
+                Task::create($created_data);
+            });
+
+            // Redirect to the tasks page with a success message
+            return redirect()->route('tasks.index')->with('success', 'Task created successfully!');
+        } catch (\Throwable $th) {
+            // Log the error for debugging
+            Log::error('Error in store method: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            // Redirect back with a generic error message
+            return redirect()->back()->with('danger', 'Something went wrong. Please try again.');
+        }
+    }
+
+    // ========================================================================
+    // ======================= Search Function ================================
+    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ========================================================================
+    public function search(Request $request)
+    {
+        try {
+            // Retrieve search inputs
+            $title = $request->input('title');
+            $description = $request->input('description');
+            $status = $request->input('status');
+            $priority = $request->input('priority');
+            $due_date = $request->input('due_date');
+
+            // Ensure only authenticated users can access this method
+            $user = auth()->guard('user')->user();
+            if (!$user) {
+                return redirect()->route('login')->with('danger', 'You must be logged in to perform this action.');
+            }
+
+            // Initialize task query for the authenticated user's tasks
+            $taskQuery = Task::where('user_id', $user->id);
+
+            // Filter by title
+            if (!empty($title)) {
+                $taskQuery->where('title', 'like', '%' . $title . '%');
+            }
+
+            // Filter by description
+            if (!empty($description)) {
+                $taskQuery->where('description', 'like', '%' . $description . '%');
+            }
+
+            // Filter by status
+            if (!empty($status)) {
+                $status = intval($status);
+                if ($status >= 1 && $status <= 3) {
+                    $taskQuery->where('status', $status);
+                }
+            }
+
+            // Filter by priority
+            if (!empty($priority)) {
+                $priority = intval($priority);
+                if ($priority >= 1 && $priority <= 3) {
+                    $taskQuery->where('priority', $priority);
+                }
+            }
+
+            // Filter by due date
+            if (!empty($due_date)) {
+                $taskQuery->whereDate('due_date', $due_date);
+            }
+
+            // Get the filtered tasks, ordered by due date
+            $tasks = $taskQuery->orderBy('due_date', 'desc')->paginate(10);
+
+            // Prepare search values for the view (for form repopulation)
+            $searchValues = [
+                'title' => $title,
+                'description' => $description,
+                'priority' => $priority,
+                'status' => $status,
+                'due_date' => $due_date,
+            ];
+
+            return view('tasks.index', compact('searchValues', 'tasks'));
+        } catch (\Throwable $th) {
+            // Log the error for debugging
+            Log::error('Error in search function: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            // Redirect back with a generic error message
+            return redirect()->back()->with('danger', 'Something went wrong. Please try again.');
         }
     }
 }

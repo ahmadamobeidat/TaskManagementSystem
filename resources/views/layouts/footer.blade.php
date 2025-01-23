@@ -15,9 +15,10 @@
             <div class="col-md-4 mb-3">
                 <h5 class="text-uppercase">Quick Links</h5>
                 <ul class="list-unstyled">
-                    <li><a href="#" class="text-white text-decoration-none">Home</a></li>
-                    <li><a href="#" class="text-white text-decoration-none">Dashboard</a></li>
-                    <li><a href="#" class="text-white text-decoration-none">Tasks</a></li>
+                    <li><a href="{{ route('welcome') }}" class="text-white text-decoration-none">Home</a></li>
+                    @auth('user')
+                        <li><a href="{{ route('tasks.index') }}" class="text-white text-decoration-none">Tasks</a></li>
+                    @endauth
                 </ul>
             </div>
 
@@ -27,7 +28,7 @@
                 <p class="small mb-1">Email: <a href="mailto:ahmadamobeidat@gmail.com"
                         class="text-white text-decoration-none">ahmadamobeidat@gmail.com</a></p>
                 <p class="small mb-1">Phone: +962-77-5632-843</p>
-                <p class="small">Address: amman,Jordan</p>
+                <p class="small">Address: Amman,Jordan</p>
             </div>
         </div>
 
