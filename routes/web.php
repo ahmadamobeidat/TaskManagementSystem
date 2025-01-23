@@ -47,15 +47,29 @@ Route::middleware(['auth.user'])->group(function () {
 
     // Task Management Routes
     Route::prefix('tasks')->name('tasks.')->group(function () {
-        Route::get('index', [TasksController::class, 'index'])->name('index'); // List all tasks (with pagination)
+
+        // List all tasks (with pagination)
+        Route::get('index', [TasksController::class, 'index'])->name('index');
+
+        // update using ajax
         Route::post('/updateStatus', [TasksController::class, 'updateStatus'])->name('updateStatus');
         Route::post('/updatePriority', [TasksController::class, 'updatePriority'])->name('updatePriority');
-        Route::get('create', [TasksController::class, 'create'])->name('create'); // create
-        Route::post('store', [TasksController::class, 'store'])->name('store'); // Create a new task
-        Route::get('show/{task}', [TasksController::class, 'show'])->name('show'); // View a single task
-        Route::get('edit/{task}', [TasksController::class, 'edit'])->name('edit'); // edit a single task
-        Route::put('update/{task}', [TasksController::class, 'update'])->name('update'); // Update a task
-        Route::delete('destroy/{task}', [TasksController::class, 'destroy'])->name('destroy'); // Delete a task
-        Route::get('/search', [TasksController::class, 'search'])->name('search'); // Search tasks
+
+        // create and store
+        Route::get('create', [TasksController::class, 'create'])->name('create');
+        Route::post('store', [TasksController::class, 'store'])->name('store');
+
+        // View a single task
+        Route::get('show/{task}', [TasksController::class, 'show'])->name('show');
+
+        // edit a single task , Update a task
+        Route::get('edit/{task}', [TasksController::class, 'edit'])->name('edit');
+        Route::put('update/{task}', [TasksController::class, 'update'])->name('update');
+
+        // Delete a task
+        Route::delete('destroy/{task}', [TasksController::class, 'destroy'])->name('destroy');
+
+        // search
+        Route::get('/search', [TasksController::class, 'search'])->name('search');
     });
 });

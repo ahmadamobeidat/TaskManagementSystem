@@ -239,7 +239,7 @@ class TasksController extends Controller
     }
 
     // ========================================================================
-    // ==================== Delete Other Attachments Function =================
+    // ==================== destroy Function ==================================
     // =========================Created By :Ahmad Abdulmonem Obeidat ==========
     // ========================================================================
     public function destroy($id, Route $route)
@@ -278,6 +278,58 @@ class TasksController extends Controller
 
             // Redirect to a generic error page with an error message
             return redirect()->route('welcome')->with('danger', 'Something went wrong. Please try again later.');
+        }
+    }
+
+    // ========================================================================
+    // ==================== show Function =====================================
+    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ========================================================================
+    public function show(Task $task)
+    {
+        try {
+            // Ensure the authenticated user owns the task
+            if ($task->user_id !== auth()->guard('user')->user()->id) {
+                abort(403, 'Unauthorized access to this task.');
+            }
+
+            // Return the task details view with the task data
+            return view('tasks.show', compact('task'));
+        } catch (\Throwable $th) {
+            // Log the error for debugging
+            Log::error('Error in show function: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            // Return a 500 error response
+            abort(500, 'Something went wrong. Please try again later.');
+        }
+    }
+
+    // ========================================================================
+    // ==================== edit Function =====================================
+    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ========================================================================
+    public function edit(Task $task)
+    {
+        try {
+            // Ensure the authenticated user owns the task
+            if ($task->user_id !== auth()->guard('user')->user()->id) {
+                abort(403, 'Unauthorized access to edit this task.');
+            }
+
+            // Return the edit view with the task data
+            return view('tasks.edit', compact('task'));
+        } catch (\Throwable $th) {
+            // Log the error for debugging
+            Log::error('Error in edit function: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            // Return a 500 error response
+            abort(500, 'Something went wrong. Please try again later.');
         }
     }
 }

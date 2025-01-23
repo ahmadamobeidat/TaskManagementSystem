@@ -184,7 +184,7 @@
                             <td class="text-center">
                                 <div class="d-flex justify-content-center align-items-center gap-2">
                                     {{-- Show Icon --}}
-                                    <a href="{{ route('tasks.edit', $task->id) }}" class="btn btn-sm btn-success"
+                                    <a href="{{ route('tasks.show', $task->id) }}" class="btn btn-sm btn-success"
                                         title="Show Task">
                                         <i class="fas fa-eye"></i>
                                     </a>
@@ -516,6 +516,14 @@
                         $priorityCell.find('.priority-dropdown').hide();
 
                         alert('Priority updated successfully!');
+
+                        // Remove the row if the updated priority doesn't match the filter
+                        const currentSearchPriority = $('#priority')
+                            .val(); // Get the searched priority
+                        if (currentSearchPriority && currentSearchPriority !==
+                            selectedPriority) {
+                            $priorityCell.closest('tr').remove(); // Remove the task row
+                        }
                     } else {
                         alert(response.message || 'Failed to update priority.');
                     }
