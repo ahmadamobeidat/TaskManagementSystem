@@ -62,6 +62,29 @@ Follow these steps to set up and run the project on your local development envir
 
 ### Installation Steps
 
+in short:
+// ===========================================================
+// ======== Download Any Project from Git Hub ================
+// ===========================================================
+// 1-write command : create folder
+// 2-write command : git init
+// 3-write command : git remote add origin https://github.com/ahmadamobeidat/TaskManagementSystem
+// 4-write command : git pull origin main
+// // =====================================================
+// // ======== After Download Any Project from Git Hub ====
+// ========================================================
+// 1- write command : composer install
+// 2- write command : copy .env.example .env
+// 3- write command : php artisan key:generate
+// 4- create database
+// 5- write command : php artisan migrate:fresh --seed
+
+// ========================================================
+//6-npm install
+//7-npm run build
+
+
+
 1. **Clone the Repository**:
    ```bash
    git clone <repository-url>

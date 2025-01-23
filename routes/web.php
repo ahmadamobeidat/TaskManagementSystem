@@ -33,11 +33,6 @@ Route::middleware(['auth.user'])->group(function () {
     // User Logout
     Route::post('/logout', [LoginController::class, 'userLogout'])->name('logout');
 
-    // dashboard
-    Route::prefix('dashboard')->name('dashboard.')->group(function () {
-        Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
-    });
-
     // myProfile routes
     Route::prefix('myProfile')->name('myProfile.')->group(function () {
         Route::get('/userProfile', [MyProfileController::class, 'userProfile'])->name('userProfile');
