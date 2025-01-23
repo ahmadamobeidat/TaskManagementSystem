@@ -45,19 +45,54 @@ class TasksController extends Controller
     }
 
     // ========================================================================
-    // ======================= updatePriority Function ========================
-    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ======================= Update Status Function =========================
+    // ========================================================================
+    public function updateStatus(Request $request)
+    {
+        // Validate the incoming request
+        $request->validate([
+            'task_id' => 'required|exists:tasks,id',
+            'status' => 'required|in:1,2,3',
+        ]);
+
+        try {
+            // Retrieve the task by ID
+            $task = Task::findOrFail($request->task_id);
+
+            // Ensure the authenticated user owns the task
+            if ($task->user_id !== auth()->guard('user')->user()->id) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            }
+
+            // Update the task's status
+            $task->status = $request->status;
+            $task->save();
+
+            return response()->json(['success' => true, 'message' => 'Status updated successfully']);
+        } catch (\Exception $e) {
+            return response()->json(['success' => false, 'message' => 'Failed to update status']);
+        }
+    }
+
+    // ========================================================================
+    // ======================= Update Priority Function =======================
     // ========================================================================
     public function updatePriority(Request $request)
     {
         $request->validate([
             'task_id' => 'required|exists:tasks,id',
-            'priority' => 'required|in:1,2,3', // Validate priority values
+            'priority' => 'required|in:1,2,3',
         ]);
 
         try {
             $task = Task::findOrFail($request->task_id);
-            $task->priority = $request->priority; // Update priority
+
+            // Ensure only the authenticated user can modify their tasks
+            if ($task->user_id !== auth()->guard('user')->user()->id) {
+                return response()->json(['success' => false, 'message' => 'Unauthorized'], 403);
+            }
+
+            $task->priority = $request->priority;
             $task->save();
 
             return response()->json(['success' => true, 'message' => 'Priority updated successfully']);
@@ -66,46 +101,70 @@ class TasksController extends Controller
         }
     }
 
+
     // ========================================================================
-    // ======================= create Function ================================
-    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ======================= Search Function ================================
     // ========================================================================
-    public function create()
+    public function search(Request $request)
     {
         try {
-            // Get the authenticated user
-            return view('tasks.create');
+            // Retrieve search inputs
+            $title = $request->input('title');
+            $description = $request->input('description');
+            $status = $request->input('status');
+            $priority = $request->input('priority');
+            $due_date = $request->input('due_date');
+
+            // Ensure only authenticated users can access this method
+            $user = Auth::guard('user')->user();
+            if (!$user) {
+                return redirect()->route('login')->with('danger', 'You must be logged in to perform this action.');
+            }
+
+            // Initialize task query for the authenticated user's tasks
+            $taskQuery = Task::where('user_id', $user->id);
+
+            // Filter by title
+            if (!empty($title)) {
+                $taskQuery->where('title', 'like', '%' . $title . '%');
+            }
+
+            // Filter by description
+            if (!empty($description)) {
+                $taskQuery->where('description', 'like', '%' . $description . '%');
+            }
+
+            // Filter by status
+            if (!empty($status)) {
+                $taskQuery->where('status', intval($status));
+            }
+
+            // Filter by priority
+            if (!empty($priority)) {
+                $taskQuery->where('priority', intval($priority));
+            }
+
+            // Filter by due date
+            if (!empty($due_date)) {
+                $taskQuery->whereDate('due_date', $due_date);
+            }
+
+            // Get the filtered tasks
+            $tasks = $taskQuery->orderBy('due_date', 'desc')->paginate(10);
+
+            // Prepare search values for the view
+            $searchValues = [
+                'title' => $title,
+                'description' => $description,
+                'priority' => $priority,
+                'status' => $status,
+                'due_date' => $due_date,
+            ];
+
+            return view('tasks.index', compact('searchValues', 'tasks'));
         } catch (\Throwable $th) {
-            // Log the error for debugging purposes
-            Log::error('Error in TasksController@index: ' . $th->getMessage(), [
-                'file' => $th->getFile(),
-                'line' => $th->getLine(),
-            ]);
-
-            // Redirect to a generic error page with an error message
-            return redirect()->route('welcome')->with('danger', 'Something went wrong. Please try again later.');
-        }
-    }
-
-    // ========================================================================
-    // ======================= updateStatus Function ==========================
-    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
-    // ========================================================================
-    public function updateStatus(Request $request)
-    {
-        $request->validate([
-            'task_id' => 'required|exists:tasks,id',
-            'status' => 'required|in:1,2,3', // Validate status
-        ]);
-
-        try {
-            $task = Task::findOrFail($request->task_id);
-            $task->status = $request->status; // Save the new status
-            $task->save();
-
-            return response()->json(['success' => true, 'message' => 'Status updated successfully']);
-        } catch (\Exception $e) {
-            return response()->json(['success' => false, 'message' => 'Failed to update status']);
+            Log::error('Error in search function: ' . $th->getMessage());
+            return redirect()->back()->with('danger', 'Something went wrong.');
         }
     }
 
@@ -154,82 +213,25 @@ class TasksController extends Controller
         }
     }
 
+
     // ========================================================================
-    // ======================= Search Function ================================
+    // ======================= create Function ================================
     // =========================Created By :Ahmad Abdulmonem Obeidat ==========
     // ========================================================================
-    public function search(Request $request)
+    public function create()
     {
         try {
-            // Retrieve search inputs
-            $title = $request->input('title');
-            $description = $request->input('description');
-            $status = $request->input('status');
-            $priority = $request->input('priority');
-            $due_date = $request->input('due_date');
-
-            // Ensure only authenticated users can access this method
-            $user = auth()->guard('user')->user();
-            if (!$user) {
-                return redirect()->route('login')->with('danger', 'You must be logged in to perform this action.');
-            }
-
-            // Initialize task query for the authenticated user's tasks
-            $taskQuery = Task::where('user_id', $user->id);
-
-            // Filter by title
-            if (!empty($title)) {
-                $taskQuery->where('title', 'like', '%' . $title . '%');
-            }
-
-            // Filter by description
-            if (!empty($description)) {
-                $taskQuery->where('description', 'like', '%' . $description . '%');
-            }
-
-            // Filter by status
-            if (!empty($status)) {
-                $status = intval($status);
-                if ($status >= 1 && $status <= 3) {
-                    $taskQuery->where('status', $status);
-                }
-            }
-
-            // Filter by priority
-            if (!empty($priority)) {
-                $priority = intval($priority);
-                if ($priority >= 1 && $priority <= 3) {
-                    $taskQuery->where('priority', $priority);
-                }
-            }
-
-            // Filter by due date
-            if (!empty($due_date)) {
-                $taskQuery->whereDate('due_date', $due_date);
-            }
-
-            // Get the filtered tasks, ordered by due date
-            $tasks = $taskQuery->orderBy('due_date', 'desc')->paginate(10);
-
-            // Prepare search values for the view (for form repopulation)
-            $searchValues = [
-                'title' => $title,
-                'description' => $description,
-                'priority' => $priority,
-                'status' => $status,
-                'due_date' => $due_date,
-            ];
-
-            return view('tasks.index', compact('searchValues', 'tasks'));
+            // Get the authenticated user
+            return view('tasks.create');
         } catch (\Throwable $th) {
-            // Log the error for debugging
-            Log::error('Error in search function: ' . $th->getMessage(), [
+            // Log the error for debugging purposes
+            Log::error('Error in TasksController@index: ' . $th->getMessage(), [
                 'file' => $th->getFile(),
                 'line' => $th->getLine(),
             ]);
 
-            // Redirect back with a generic error message
-            return redirect()->back()->with('danger', 'Something went wrong. Please try again.');
+            // Redirect to a generic error page with an error message
+            return redirect()->route('welcome')->with('danger', 'Something went wrong. Please try again later.');
         }
     }
 }

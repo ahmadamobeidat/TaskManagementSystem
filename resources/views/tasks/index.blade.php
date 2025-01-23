@@ -32,12 +32,13 @@
                 <h2>Search Section</h2>
             </label>
             <br>
+
             <form action="{{ route('tasks.search') }}" method="GET" class="row g-3" id="searchForm">
                 {{-- Title --}}
                 <div class="col-md-2">
                     <label for="title" class="form-label">Title</label>
-                    <input type="text" name="title" class="form-control @error('title') is-invalid @enderror" id="title"
-                        value="{{ $searchValues['title'] ?? '' }}" placeholder="Title">
+                    <input type="text" name="title" class="form-control @error('title') is-invalid @enderror"
+                        id="title" value="{{ $searchValues['title'] ?? '' }}" placeholder="Title">
                     @error('title')
                         <div class="invalid-feedback">{{ $message }}</div>
                     @enderror
@@ -84,7 +85,8 @@
                 {{-- Due Date --}}
                 <div class="col-md-3">
                     <label for="due_date" class="form-label">Due Date</label>
-                    <input type="date" name="due_date" id="due_date" class="form-control @error('due_date') is-invalid @enderror"
+                    <input type="date" name="due_date" id="due_date"
+                        class="form-control @error('due_date') is-invalid @enderror"
                         value="{{ $searchValues['due_date'] ?? '' }}">
                     @error('due_date')
                         <div class="invalid-feedback">{{ $message }}</div>
@@ -138,41 +140,38 @@
                             <td id="status" data-task-id="{{ $task->id }}" data-status="{{ $task->status }}"
                                 class="text-center">
                                 <!-- Status Badge -->
-                                <span id="status-text" class="badge"
+                                <span class="status-text badge"
                                     style="cursor: pointer; background-color: {{ $task->status == 'Completed' ? 'green' : ($task->status == 'To Do' ? 'blue' : ($task->status == 'In Progress' ? 'orange' : 'red')) }}; color: white;">
                                     {{ $task->status ?? '---' }}
                                 </span>
 
                                 <!-- Status dropdown (hidden by default) -->
-                                <select id="status-dropdown" class="form-select form-select-sm"
+                                <select class="status-dropdown form-select form-select-sm"
                                     style="display:none; width: auto;">
-                                    <option value="1" {{ $task->status == 'To Do' ? 'selected' : '' }}>To Do
-                                    </option>
+                                    <option value="1" {{ $task->status == 'To Do' ? 'selected' : '' }}>To Do</option>
                                     <option value="2" {{ $task->status == 'In Progress' ? 'selected' : '' }}>In
                                         Progress</option>
-                                    <option value="3" {{ $task->status == 'Completed' ? 'selected' : '' }}>
-                                        Completed</option>
+                                    <option value="3" {{ $task->status == 'Completed' ? 'selected' : '' }}>Completed
+                                    </option>
                                 </select>
                             </td>
 
-                            {{-- Priority --}}
+                            {{-- priority --}}
                             <td id="priority" data-task-id="{{ $task->id }}" data-priority="{{ $task->priority }}"
                                 class="text-center">
                                 <!-- Priority Badge -->
-                                <span id="priority-text" class="badge"
+                                <span class="priority-text badge"
                                     style="cursor: pointer; background-color: {{ $task->priority == 'High' ? 'red' : ($task->priority == 'Medium' ? 'orange' : 'blue') }}; color: white;">
                                     {{ $task->priority ?? '---' }}
                                 </span>
 
                                 <!-- Priority dropdown (hidden by default) -->
-                                <select id="priority-dropdown" class="form-select form-select-sm"
+                                <select class="priority-dropdown form-select form-select-sm"
                                     style="display:none; width: auto;">
-                                    <option value="1" {{ $task->priority == 'High' ? 'selected' : '' }}>High
-                                    </option>
+                                    <option value="1" {{ $task->priority == 'High' ? 'selected' : '' }}>High</option>
                                     <option value="2" {{ $task->priority == 'Medium' ? 'selected' : '' }}>Medium
                                     </option>
-                                    <option value="3" {{ $task->priority == 'Low' ? 'selected' : '' }}>Low
-                                    </option>
+                                    <option value="3" {{ $task->priority == 'Low' ? 'selected' : '' }}>Low</option>
                                 </select>
                             </td>
 
@@ -331,23 +330,38 @@
 {{-- add csrf token --}}
 <meta name="csrf-token" content="{{ csrf_token() }}" />
 
-{{-- update the status DIRECTLY From show --}}
+{{-- status --}}
 <script>
     $(document).ready(function() {
-        // Show the dropdown when the badge is clicked
-        $('#status-text').on('click', function() {
-            const $statusCell = $('#status');
+        // Show the dropdown when the status badge is clicked
+        $(document).on('click', '.status-text', function() {
+            const $statusCell = $(this).closest(
+                'td'); // Get the closest <td> containing the data-task-id
+            const taskID = $statusCell.data(
+                'task-id'); // Retrieve the task ID from the data-task-id attribute
+
+            if (!taskID) {
+                alert('Task ID is missing!');
+                return;
+            }
+
             const currentStatus = $statusCell.attr('data-status');
 
             // Hide the badge and show the dropdown
-            $('#status-text').hide();
-            $('#status-dropdown').val(currentStatus).show().focus();
+            $statusCell.find('.status-text').hide();
+            $statusCell.find('.status-dropdown').val(currentStatus).show().focus();
         });
 
         // Handle dropdown change to update status
-        $('#status-dropdown').on('change', function() {
-            const selectedStatus = $(this).val(); // Get selected status
-            const taskID = $('#status').attr('data-task-id'); // Get task ID
+        $(document).on('change', '.status-dropdown', function() {
+            const $statusCell = $(this).closest('td'); // Get the closest <td>
+            const taskID = $statusCell.data('task-id'); // Retrieve the task ID
+            const selectedStatus = $(this).val(); // Get the selected status value
+
+            if (!taskID) {
+                alert('Task ID is missing!');
+                return;
+            }
 
             // Make AJAX request to update status
             $.ajax({
@@ -357,56 +371,60 @@
                     'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token
                 },
                 data: {
-                    task_id: taskID,
-                    status: selectedStatus
+                    task_id: taskID, // Pass the task ID
+                    status: selectedStatus // Pass the selected status
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Update the badge with the new status
                         const statusText = getStatusText(selectedStatus);
                         const statusColor = getStatusColor(selectedStatus);
 
-                        $('#status-text')
-                            .text(statusText)
+                        // Update the badge with the new status
+                        $statusCell
+                            .attr('data-status',
+                                selectedStatus) // Update the data-status attribute
+                            .find('.status-text')
+                            .text(statusText) // Update text
                             .css('background-color', statusColor)
                             .show();
 
-                        // Update the data-status attribute
-                        $('#status').attr('data-status', selectedStatus);
-
-                        // Hide the dropdown
-                        $('#status-dropdown').hide();
+                        $statusCell.find('.status-dropdown').hide();
 
                         alert('Status updated successfully!');
+
+                        // Remove the task row if it no longer matches search criteria
+                        const currentSearchStatus = $('#status')
+                            .val(); // Get the searched status
+                        if (currentSearchStatus && currentSearchStatus !== selectedStatus) {
+                            $statusCell.closest('tr').remove(); // Remove the task row
+                        }
                     } else {
-                        alert('Failed to update status. Please try again.');
+                        alert(response.message || 'Failed to update status.');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error:', xhr.responseText || error);
-                    alert('An error occurred while updating the status.');
+                error: function(xhr) {
+                    console.error('Error:', xhr.responseText);
+                    alert(xhr.responseJSON?.message ||
+                        'An error occurred while updating the status.');
                 }
             });
         });
 
-        // Reset the view when clicking outside the badge or dropdown
+        // Reset the view when clicking outside
         $(document).on('click', function(e) {
-            const $statusText = $('#status-text');
-            const $statusDropdown = $('#status-dropdown');
-            const $statusCell = $('#status');
-            const originalStatus = $statusCell.attr('data-status');
+            const $dropdown = $('.status-dropdown:visible'); // Find visible dropdown
+            if ($dropdown.length && !$(e.target).closest($dropdown).length && !$(e.target).closest(
+                    '.status-text').length) {
+                const $statusCell = $dropdown.closest('td'); // Get the associated <td>
+                const originalStatus = $statusCell.attr('data-status'); // Get original status
 
-            if (!$(e.target).closest($statusText).length && !$(e.target).closest($statusDropdown)
-                .length) {
-                if ($statusDropdown.is(':visible')) {
-                    // Revert to badge view
-                    $statusText
-                        .text(getStatusText(originalStatus))
-                        .css('background-color', getStatusColor(originalStatus))
-                        .show();
+                // Revert back to badge view
+                $statusCell.find('.status-text')
+                    .text(getStatusText(originalStatus)) // Reset the text
+                    .css('background-color', getStatusColor(originalStatus)) // Reset the color
+                    .show();
 
-                    $statusDropdown.hide();
-                }
+                $dropdown.hide(); // Hide the dropdown
             }
         });
 
@@ -433,88 +451,98 @@
                 case '3':
                     return 'green';
                 default:
-                    return 'red';
+                    return 'gray';
             }
         }
     });
 </script>
 
+{{-- priority --}}
 <script>
     $(document).ready(function() {
         // Show the dropdown when the priority badge is clicked
-        $('#priority-text').on('click', function() {
-            const $priorityCell = $('#priority');
-            const currentPriority = $priorityCell.attr('data-priority');
+        $(document).on('click', '.priority-text', function() {
+            const $priorityCell = $(this).closest('td'); // Get the closest <td> with priority details
+            const currentPriority = $priorityCell.attr('data-priority'); // Get the current priority
+            const taskID = $priorityCell.data('task-id'); // Get the task ID
+
+            if (!taskID) {
+                alert('Task ID is missing!');
+                return;
+            }
 
             // Hide the badge and show the dropdown
-            $('#priority-text').hide();
-            $('#priority-dropdown').val(currentPriority).show().focus();
+            $priorityCell.find('.priority-text').hide();
+            $priorityCell.find('.priority-dropdown').val(currentPriority).show().focus();
         });
 
         // Handle dropdown change to update priority
-        $('#priority-dropdown').on('change', function() {
-            const selectedPriority = $(this).val(); // Get selected priority
-            const taskID = $('#priority').attr('data-task-id'); // Get task ID
+        $(document).on('change', '.priority-dropdown', function() {
+            const $priorityCell = $(this).closest('td'); // Get the closest <td>
+            const taskID = $priorityCell.data('task-id'); // Retrieve the task ID
+            const selectedPriority = $(this).val(); // Get selected priority value
+
+            if (!taskID) {
+                alert('Task ID is missing!');
+                return;
+            }
 
             // Make AJAX request to update priority
             $.ajax({
-                url: '{{ route('tasks.updatePriority') }}', // Use the correct route or create a new one for priority
+                url: '{{ route('tasks.updatePriority') }}',
                 method: 'POST',
                 headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr(
-                        'content') // Add CSRF token
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') // CSRF token
                 },
                 data: {
-                    task_id: taskID,
-                    priority: selectedPriority // Pass selected priority
+                    task_id: taskID, // Pass the task ID
+                    priority: selectedPriority // Pass the selected priority
                 },
                 success: function(response) {
                     if (response.success) {
-                        // Update the badge with the new priority
                         const priorityText = getPriorityText(selectedPriority);
                         const priorityColor = getPriorityColor(selectedPriority);
 
-                        $('#priority-text')
-                            .text(priorityText)
-                            .css('background-color', priorityColor)
+                        // Update the badge with the new priority
+                        $priorityCell
+                            .attr('data-priority',
+                                selectedPriority) // Update the data-priority attribute
+                            .find('.priority-text')
+                            .text(priorityText) // Update the text
+                            .css('background-color', priorityColor) // Update the color
                             .show();
 
-                        // Update the data-priority attribute
-                        $('#priority').attr('data-priority', selectedPriority);
-
                         // Hide the dropdown
-                        $('#priority-dropdown').hide();
+                        $priorityCell.find('.priority-dropdown').hide();
 
                         alert('Priority updated successfully!');
                     } else {
-                        alert('Failed to update priority. Please try again.');
+                        alert(response.message || 'Failed to update priority.');
                     }
                 },
-                error: function(xhr, status, error) {
-                    console.error('Error:', xhr.responseText || error);
-                    alert('An error occurred while updating the priority.');
+                error: function(xhr) {
+                    console.error('Error:', xhr.responseText || xhr.statusText);
+                    alert(xhr.responseJSON?.message ||
+                        'An error occurred while updating the priority.');
                 }
             });
         });
 
-        // Reset the view when clicking outside the badge or dropdown
+        // Hide the dropdown and reset view when clicking outside
         $(document).on('click', function(e) {
-            const $priorityText = $('#priority-text');
-            const $priorityDropdown = $('#priority-dropdown');
-            const $priorityCell = $('#priority');
-            const originalPriority = $priorityCell.attr('data-priority');
+            const $dropdown = $('.priority-dropdown:visible'); // Find visible dropdown
+            if ($dropdown.length && !$(e.target).closest($dropdown).length && !$(e.target).closest(
+                    '.priority-text').length) {
+                const $priorityCell = $dropdown.closest('td'); // Get the associated <td>
+                const originalPriority = $priorityCell.attr('data-priority'); // Get original priority
 
-            if (!$(e.target).closest($priorityText).length && !$(e.target).closest($priorityDropdown)
-                .length) {
-                if ($priorityDropdown.is(':visible')) {
-                    // Revert to badge view
-                    $priorityText
-                        .text(getPriorityText(originalPriority))
-                        .css('background-color', getPriorityColor(originalPriority))
-                        .show();
+                // Revert back to badge view
+                $priorityCell.find('.priority-text')
+                    .text(getPriorityText(originalPriority)) // Reset the text
+                    .css('background-color', getPriorityColor(originalPriority)) // Reset the color
+                    .show();
 
-                    $priorityDropdown.hide();
-                }
+                $dropdown.hide(); // Hide the dropdown
             }
         });
 
