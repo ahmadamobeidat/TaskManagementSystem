@@ -182,10 +182,10 @@ class TasksController extends Controller
             // Validate the request data
             $validated = $request->validate([
                 'title' => 'required|string|max:255',
-                'description' => 'nullable|string',
+                'description' => 'required|string',
                 'due_date' => 'required|date',
-                'status' => 'required|in:1,2,3', // Assuming 1=To Do, 2=In Progress, 3=Completed
-                'priority' => 'required|in:1,2,3', // Assuming 1=High, 2=Medium, 3=Low
+                'status' => 'required|in:1,2,3', //  1=To Do, 2=In Progress, 3=Completed
+                'priority' => 'required|in:1,2,3', // 1=High, 2=Medium, 3=Low
             ]);
 
             // Add the authenticated user's ID to the task data
@@ -330,6 +330,44 @@ class TasksController extends Controller
 
             // Return a 500 error response
             abort(500, 'Something went wrong. Please try again later.');
+        }
+    }
+
+    // ========================================================================
+    // ==================== edit Function =====================================
+    // =========================Created By :Ahmad Abdulmonem Obeidat ==========
+    // ========================================================================
+    public function update(Request $request, Task $task)
+    {
+        try {
+            // Ensure the authenticated user owns the task
+            if ($task->user_id !== auth()->guard('user')->id()) {
+                abort(403, 'Unauthorized access to update this task.');
+            }
+
+            // Validate the request data
+            $validatedData = $request->validate([
+                'title' => 'required|string|max:255',
+                'description' => 'required|string',
+                'priority' => 'required|in:1,2,3', // 1: High, 2: Medium, 3: Low
+                'status' => 'required|in:1,2,3', // 1: To Do, 2: In Progress, 3: Completed
+                'due_date' => 'required|date',
+            ]);
+
+            // Update the task with validated data
+            $task->update($validatedData);
+
+            // Redirect to the tasks index with a success message
+            return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
+        } catch (\Throwable $th) {
+            // Log the error for debugging
+            Log::error('Error in update function: ' . $th->getMessage(), [
+                'file' => $th->getFile(),
+                'line' => $th->getLine(),
+            ]);
+
+            // Redirect back with a generic error message
+            return redirect()->back()->with('danger', 'Something went wrong. Please try again.');
         }
     }
 }
