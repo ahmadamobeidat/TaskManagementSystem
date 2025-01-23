@@ -28,8 +28,12 @@ class TasksController extends Controller
                 return redirect()->route('login')->with('danger', 'You must be logged in to view tasks.');
             }
 
+            // Flush all cache
+            Cache::flush();
+
             // Cache key for the user's task list
             $cacheKey = "user.{$user->id}.tasks.list";
+
 
             // Retrieve tasks with caching
             $tasks = Cache::remember($cacheKey, now()->addMinutes(1), function () use ($user) {
@@ -77,6 +81,9 @@ class TasksController extends Controller
             // Clear the cache for the task list
             Cache::forget("user.{$task->user_id}.tasks.list");
 
+            // Flush all cache
+            Cache::flush();
+
             return response()->json(['success' => true, 'message' => 'Status updated successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to update status']);
@@ -107,6 +114,9 @@ class TasksController extends Controller
             // Clear the cache for the task list
             Cache::forget("user.{$task->user_id}.tasks.list");
 
+            // Flush all cache
+            Cache::flush();
+
             return response()->json(['success' => true, 'message' => 'Priority updated successfully']);
         } catch (\Exception $e) {
             return response()->json(['success' => false, 'message' => 'Failed to update priority']);
@@ -125,9 +135,16 @@ class TasksController extends Controller
                 return redirect()->route('login')->with('danger', 'You must be logged in to perform this action.');
             }
 
+            // Flush all cache entries before performing the search
+            Cache::flush();
+
+            // Generate a unique cache key for the search query
             $cacheKey = "user.{$user->id}.tasks.search." . md5(json_encode($request->all()));
 
-            $tasks = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($user, $request) {
+
+            // Fetch tasks from the cache or database
+            // Retrieve tasks with caching
+            $tasks = Cache::remember($cacheKey, now()->addMinutes(1), function () use ($user, $request) {
                 $taskQuery = Task::where('user_id', $user->id);
 
                 if (!empty($request->input('title'))) {
@@ -149,12 +166,24 @@ class TasksController extends Controller
                 return $taskQuery->orderBy('due_date', 'desc')->paginate(10);
             });
 
-            return view('tasks.index', compact('tasks'));
+            // Prepare search values for the view
+            $searchValues = [
+                'title' => $request->input('title'),
+                'description' => $request->input('description'),
+                'status' => $request->input('status'),
+                'priority' => $request->input('priority'),
+                'due_date' => $request->input('due_date'),
+            ];
+
+
+            // Return the view with tasks and search values
+            return view('tasks.index', compact('tasks', 'searchValues'));
         } catch (\Throwable $th) {
             Log::error('Error in search function: ' . $th->getMessage());
             return redirect()->back()->with('danger', 'Something went wrong.');
         }
     }
+
 
 
     // ========================================================================
@@ -184,6 +213,9 @@ class TasksController extends Controller
 
                 // Clear the cache for the task list
                 Cache::forget("user.{$user->id}.tasks.list");
+
+                // Flush all cache
+                Cache::flush();
             });
 
             return redirect()->route('tasks.index')->with('success', 'Task created successfully!');
@@ -206,6 +238,9 @@ class TasksController extends Controller
             if (!auth()->guard('user')->check()) {
                 return redirect()->route('login')->with('danger', 'You must be logged in to create a task.');
             }
+
+            // Flush all cache
+            Cache::flush();
             // Get the authenticated user
             return view('tasks.create');
         } catch (\Throwable $th) {
@@ -242,6 +277,9 @@ class TasksController extends Controller
             // Clear the cache for the task list
             Cache::forget("user.{$user->id}.tasks.list");
 
+            // Flush all cache
+            Cache::flush();
+
             return redirect()->back()->with('success', 'Task deleted successfully.');
         } catch (\Throwable $th) {
             Log::error('Error in destroy function: ' . $th->getMessage());
@@ -266,7 +304,10 @@ class TasksController extends Controller
 
             $cacheKey = "user.{$user->id}.task.{$task->id}";
 
-            $cachedTask = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($task) {
+            // Flush all cache
+            Cache::flush();
+
+            $cachedTask = Cache::remember($cacheKey, now()->addMinutes(1), function () use ($task) {
                 return $task;
             });
 
@@ -302,7 +343,10 @@ class TasksController extends Controller
 
             $cacheKey = "user.{$user->id}.task.edit.{$task->id}";
 
-            $cachedTask = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($task) {
+            // Flush all cache
+            Cache::flush();
+
+            $cachedTask = Cache::remember($cacheKey, now()->addMinutes(1), function () use ($task) {
                 return $task;
             });
 
@@ -345,6 +389,10 @@ class TasksController extends Controller
             $task->update($validatedData);
 
             // Redirect to the tasks index with a success message
+
+            // Flush all cache
+            Cache::flush();
+
             return redirect()->route('tasks.index')->with('success', 'Task updated successfully.');
         } catch (\Throwable $th) {
             // Log the error for debugging
