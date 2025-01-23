@@ -15,9 +15,9 @@
 
     <script src="{{ asset('front_end_style/js/bootstrap.min.js') }}"></script>
     <!-- Bootstrap JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
+    {{-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-q2kG4FR9m3pMDnIeK6QOYF1jQQsuZ9iMsFL5vlwPQvvx43pCiFxOFbR2Q9P5BGFh" crossorigin="anonymous">
-    </script>
+    </script> --}}
 
 
     {{-- Sweet Alert --}}
@@ -44,7 +44,7 @@
         </script>
     @endif
 
-    <script>
+    {{-- <script>
         document.addEventListener("DOMContentLoaded", function() {
             const taskCountBadge = document.getElementById("task-reminder-count");
 
@@ -65,7 +65,7 @@
                     taskCountBadge.style.display = "none";
                 });
         });
-    </script>
+    </script> --}}
 
 
     </body>

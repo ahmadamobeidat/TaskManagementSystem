@@ -5,19 +5,17 @@
             <a href="{{ route('welcome') }}" class="nav-link text-white fw-bold px-3">Home</a>
             @auth('user')
                 <a href="#" class="nav-link text-white fw-bold px-3">Dashboard</a>
-                <a href="#" class="nav-link text-white fw-bold px-3">Tasks</a>
+                <a href="{{ route('tasks.index') }}" class="nav-link text-white fw-bold px-3">Tasks</a>
             @endauth
         </nav>
 
         <!-- Action Buttons -->
         <div class="d-flex align-items-center">
             @auth('user')
+                <!-- Bell Icon with Notification -->
                 <div class="position-relative me-3">
-                    <!-- Bell Icon -->
-                    {{-- {{ route('tasks.reminders') }} --}}
-                    <a href="#" class="text-white">
+                    <a href="#" class="text-white" style="text-decoration: none;">
                         <i class="fas fa-bell" style="font-size: 1.5rem;"></i>
-                        <!-- Notification Count Badge -->
                         <span id="task-reminder-count"
                             class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                             0
@@ -25,16 +23,23 @@
                     </a>
                 </div>
 
-                <span class="text-white fw-bold me-3">Welcome, {{ Auth::guard('user')->user()->name }}</span>
+                <!-- Welcome Message -->
+                <span class="text-white fw-bold me-3">
+                    Welcome, {{ Auth::guard('user')->user()->name }}
+                </span>
 
-                <a href="{{ route('myProfile.userProfile') }}" class="btn btn-outline-light fw-bold me-2">My Profile</a>
+                <!-- My Profile Button -->
+                <a href="{{ route('myProfile.userProfile') }}" class="btn btn-outline-light fw-bold me-2">
+                    My Profile
+                </a>
 
-                {{-- log out  --}}
-                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: inline;">
+                <!-- Logout Form -->
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="margin: 0;">
                     @csrf
-                    <button type="submit" class="btn btn-outline-light fw-bold me-2">Logout</button>
+                    <button type="submit" class="btn btn-outline-light fw-bold">Logout</button>
                 </form>
             @else
+                <!-- Login and Register Buttons -->
                 <a href="{{ route('login') }}" class="btn btn-outline-light fw-bold me-2">Login</a>
                 <a href="{{ route('register') }}" class="btn btn-light fw-bold">Register</a>
             @endauth
