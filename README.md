@@ -49,18 +49,105 @@ We would like to extend our thanks to the following sponsors for funding Laravel
 - **[byte5](https://byte5.de)**
 - **[OP.GG](https://op.gg)**
 
-## Contributing
+## Setting Up the Project
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+Follow these steps to set up and run the project on your local development environment:
 
-## Code of Conduct
+### Prerequisites
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+1. **Install PHP (8.0 or higher)**: Ensure you have PHP installed on your system.
+2. **Install Composer**: Composer is required to manage Laravel dependencies. You can download it from [getcomposer.org](https://getcomposer.org).
+3. **Install Node.js and npm**: Required for front-end asset compilation. You can download it from [nodejs.org](https://nodejs.org).
+4. **Install a Database**: Use MySQL, PostgreSQL, SQLite, or any supported database system.
 
-## Security Vulnerabilities
+### Installation Steps
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+1. **Clone the Repository**:
+   ```bash
+   git clone <repository-url>
+   cd <project-folder>
+2. **Install Dependencies**:
+composer install
+npm install
+3. **Set Up Environment**:
+cp .env.example .env
+Update .env with your database and application configurations:
+env
+Copy
+Edit
+APP_NAME=Laravel
+APP_URL=http://localhost
 
-## License
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=your_database_name
+DB_USERNAME=your_database_user
+DB_PASSWORD=your_database_password
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+4.**Generate Application Key**:
+php artisan key:generate
+
+5.**Run Migrations**:
+php artisan migrate
+
+6.**Seed the Database (Optional): Populate the database with demo data**:
+php artisan db:seed
+
+7.**Compile Front-End Assets: If your project has front-end assets, run**:
+npm run dev
+8.**Run the Development Server: Start the application**:
+php artisan serve
+Open your browser and navigate to http://localhost:8000
+
+**Routes**
+Public Pages
+Route::get('/', [HomePageController::class, 'index'])->name('welcome');
+Route::get('register', [RegisterController::class, 'register'])->name('register');
+Route::post('storeUser', [RegisterController::class, 'storeUser'])->name('storeUser');
+Route::get('login', [LoginController::class, 'login'])->name('login');
+Route::post('userLoginRequest', [LoginController::class, 'userLoginRequest'])->name('userLoginRequest');
+
+Authenticated User Routes
+Route::middleware(['auth.user'])->group(function () {
+    Route::post('/logout', [LoginController::class, 'userLogout'])->name('logout');
+    
+    Route::prefix('dashboard')->name('dashboard.')->group(function () {
+        Route::get('dashboard', [DashboardController::class, 'dashboard'])->name('dashboard');
+    });
+
+    Route::prefix('myProfile')->name('myProfile.')->group(function () {
+        Route::get('/userProfile', [MyProfileController::class, 'userProfile'])->name('userProfile');
+        Route::get('/editUserProfile', [MyProfileController::class, 'editUserProfile'])->name('editUserProfile');
+        Route::put('updateProfile', [MyProfileController::class, 'updateUserProfile'])->name('updateProfile');
+    });
+
+    Route::prefix('tasks')->name('tasks.')->group(function () {
+        Route::get('index', [TasksController::class, 'index'])->name('index');
+        Route::post('/updateStatus', [TasksController::class, 'updateStatus'])->name('updateStatus');
+        Route::post('/updatePriority', [TasksController::class, 'updatePriority'])->name('updatePriority');
+        Route::get('create', [TasksController::class, 'create'])->name('create');
+        Route::post('store', [TasksController::class, 'store'])->name('store');
+        Route::get('show/{task}', [TasksController::class, 'show'])->name('show');
+        Route::get('edit/{task}', [TasksController::class, 'edit'])->name('edit');
+        Route::put('update/{task}', [TasksController::class, 'update'])->name('update');
+        Route::delete('destroy/{task}', [TasksController::class, 'destroy'])->name('destroy');
+        Route::get('/search', [TasksController::class, 'search'])->name('search');
+    });
+});
+
+
+**Contributing**:
+Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the Laravel documentation.
+
+**Code of Conduct**
+In order to ensure that the Laravel community is welcoming to all, please review and abide by the Code of Conduct.
+
+Security Vulnerabilities
+If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via taylor@laravel.com. All security vulnerabilities will be promptly addressed.
+
+License
+The Laravel framework is open-sourced software licensed under the MIT license.
+
+
+
