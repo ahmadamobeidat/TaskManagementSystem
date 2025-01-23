@@ -1,0 +1,63 @@
+.nav-link {
+    transition: color 0.3s ease-in-out;
+}
+
+.nav-link:hover {
+    color: #ccc;
+    /* Light gray color for hover */
+}
+
+.btn-outline-light {
+    border-color: #fff;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.btn-outline-light:hover {
+    background-color: #fff;
+    color: #000;
+    /* Black text for hover */
+}
+
+.btn-primary {
+    background-color: #0d6efd;
+    /* Primary blue matching footer */
+    border-color: #0d6efd;
+    transition: background-color 0.3s ease-in-out, color 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+    background-color: #0056b3;
+    /* Darker blue for hover */
+    border-color: #0056b3;
+}
+
+.hero-section {
+    background-image: url("path-to-your-image.jpg");
+    /* Add a background image if needed */
+    background-size: cover;
+    background-position: center;
+    color: white;
+}
+
+.features-section .feature-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.features-section .feature-card:hover {
+    transform: translateY(-10px);
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.cta-section {
+    background: linear-gradient(135deg, #0d6efd, #003580);
+}
+
+.fas.fa-bell {
+    cursor: pointer;
+}
+
+.badge {
+    font-size: 0.8rem;
+    padding: 5px 10px;
+    display: none; /* Hidden by default */
+}

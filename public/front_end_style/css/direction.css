@@ -1,0 +1,311 @@
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@100;200;300;400;500;600;700&display=swap');
+
+[dir="rtl"] body {
+    direction: rtl;
+    font-family: "IBM Plex Sans Arabic", sans-serif;
+    font-weight: 300;
+}
+
+[dir="rtl"] header .navbar .navbar-nav .nav-item .nav-link,
+[dir="rtl"] .h1,
+[dir="rtl"] .h2,
+[dir="rtl"] .h3,
+[dir="rtl"] .h4,
+[dir="rtl"] .h5,
+[dir="rtl"] .h6,
+[dir="rtl"] h1,
+[dir="rtl"] h2,
+[dir="rtl"] h3,
+[dir="rtl"] h4,
+[dir="rtl"] h5,
+[dir="rtl"] h6,
+[dir="rtl"] div,
+[dir="rtl"] p,
+[dir="rtl"] label,
+[dir="rtl"] strong,
+[dir="rtl"] span,
+[dir="rtl"] a {
+    font-family: "IBM Plex Sans Arabic", sans-serif;
+}
+
+[dir="rtl"] footer .copy_right,
+[dir="rtl"] .home .news_section .news_slider .text_con p {
+    text-align: right;
+}
+
+[dir="rtl"] .main_slider .slick-list.draggable {
+    direction: ltr;
+}
+
+[dir="rtl"] footer .title {
+    text-align: right;
+    letter-spacing: 1px;
+}
+
+[dir="rtl"] .slick-list.draggable {
+    direction: ltr;
+}
+
+[dir="rtl"] .search_con .tab-content .tab-pane .label_drop_down,
+[dir="rtl"] .select2-results__option--selectable {
+    text-align: right;
+}
+
+[dir="rtl"] .search_con .tab-content .tab-pane .label_drop_down {
+    border-right: none;
+    border-left: 1px solid #ccc;
+}
+
+[dir="rtl"] .home .modules .cards_slider .car_card .text_cards {
+    right: auto;
+    left: 0;
+    padding: 1.5rem 3.4rem 1rem 1rem;
+    text-align: right;
+    direction: rtl;
+}
+
+[dir="rtl"] .car_details .modules .cards_slider .car_card .text_cards {
+    left: 0;
+    right: auto;
+}
+
+[dir="rtl"] .car_details .modules .cards_slider .car_card .text_cards {
+    padding: 1.5rem 3.4rem 1rem 1rem;
+    direction: rtl;
+    text-align: right;
+}
+
+[dir="rtl"] .car_details .modules .cards_slider .car_card .main_img,
+[dir="rtl"] .home .modules .cards_slider .car_card .main_img {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .home .modules .cards_slider .car_card .offers,
+[dir="rtl"] .home .modules .cards_slider .car_card .discount,
+[dir="rtl"] .car_details .modules .cards_slider .car_card .offers,
+[dir="rtl"] .car_details .modules .cards_slider .car_card .discount {
+    margin-left: auto;
+}
+
+[dir="rtl"] .home .sell_section .text_con_wrapper .text_con {
+    padding-left: 0;
+    padding-right: 42px;
+    text-align: right;
+}
+
+[dir="rtl"] .sell_sectionText ul li {
+    padding-left: 0;
+    padding-right: 30px;
+    background-position: right;
+    text-align: right;
+}
+
+[dir="rtl"] .home .sell_section .text_con_wrapper:after,
+[dir="rtl"] .home .sell_section .text_con_wrapper:before,
+[dir="rtl"] .home .sell_section .text_con_wrapper .text_con {
+    left: auto;
+    right: 0;
+    clip-path: polygon(26% 0%, 100% 0, 100% 99%, 36% 100%);
+}
+
+
+[dir="rtl"] .search_con .nav {
+    left: auto;
+    right: 0;
+}
+
+
+[dir="rtl"] .home .main_slider .slick-dots {
+    right: auto;
+    left: 70px;
+}
+
+[dir="rtl"] .home .main_slider .slide .text {
+    left: auto;
+    right: 71px;
+}
+
+[dir="rtl"] .home .main_slider .custom-arrow {
+    left: auto;
+    right: 140px;
+}
+
+[dir="rtl"] .home .main_slider .custom-prev {
+    left: auto;
+    right: 70px;
+}
+
+
+
+[dir="rtl"] .inner_header .breadCrumb {
+    left: auto;
+    right: 70px;
+    text-align: right;
+}
+
+[dir="rtl"] .terms {
+    text-align: right;
+}
+[dir="rtl"] ol ,[dir="rtl"] ul  {
+    text-align: right;
+}
+
+[dir="rtl"] .link_con .link_arrow img,
+[dir="rtl"] a[rel="prev"] {
+    transform: rotate(180deg);
+}
+
+[dir="rtl"] a[rel="next"] {
+    transform: rotate(-180deg);
+}
+
+[dir="rtl"] #block-whatsupicon {
+    right: auto;
+    left: 1%;
+}
+
+[dir="rtl"] .from_style .form_wrapper .form-group .control-label {
+    text-align: right;
+}
+
+[dir="rtl"] .about_us .vision_mission .right {
+    text-align: right;
+}
+
+[dir="rtl"] .about_us .title_wrapper {
+    padding-right: 2rem;
+    padding-left: 0;
+}
+
+[dir="rtl"] .about_us .title_wrapper:before {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .about_us .our_values .box_wrapper .box {
+    padding-right: 20px;
+    padding-left: 0px;
+}
+
+[dir="rtl"] .about_us .after_sell {
+    text-align: right;
+}
+
+[dir="rtl"] .about_us .after_sell .desc_con ul {
+    padding-right: 2rem;
+    padding-left: 0;
+}
+
+[dir="rtl"] .careers .left {
+    text-align: right;
+}
+
+[dir="rtl"] .careers .right .img2 {
+    left: auto;
+    right: 0;
+}
+
+[dir="rtl"] .news .news_con .news_Card .desc {
+    text-align: right;
+}
+
+[dir="rtl"] .inner_news .left .title {
+    text-align: right;
+}
+
+[dir="rtl"] .inner_news .left .title:after {
+    right: 140px;
+}
+
+[dir="rtl"] .inner_news .right p,
+[dir="rtl"] .inner_news .right .title,
+[dir="rtl"] .inner_news .left .samall_card .text {
+    text-align: right;
+}
+
+[dir="rtl"] .contactUsTabs .iframe_wrapper {
+    margin-right: auto;
+    margin-left: 0;
+}
+
+[dir="rtl"] .contact_us.container.form {
+    padding: 0 0 0 30px;
+}
+
+[dir="rtl"] footer .list-unstyled {
+    padding-right: 0;
+}
+
+[dir="rtl"] .search_con .tab-content .tab-pane .label_drop_down .dropdown-toggle:after {
+    left: 20px;
+    right: auto;
+    bottom: 0;
+}
+
+[dir="rtl"] .search_con .tab-content .tab-pane form {
+    padding-right: 2rem;
+}
+
+[dir="rtl"] .car_details .slider_boxes .boxes_con .car_info_box {
+    text-align: right;
+}
+
+[dir="rtl"] .car_details .slider_boxes .sliders .counter {
+    left: 65px;
+    right: auto;
+}
+
+[dir="rtl"] .car_details .slider_boxes .sliders .spec {
+    text-align: right;
+}
+
+[dir="rtl"] .car_details .slider_boxes .sliders .spec .main_title {
+    padding-left: 0;
+    padding-right: 20px;
+}
+
+.select2-container--default[dir="rtl"] .select2-selection--single .select2-selection__arrow {
+    left: 5px;
+    right: auto;
+}
+
+.select2-container[dir="rtl"] .select2-selection--single .select2-selection__rendered {
+    padding-right: 0;
+    padding-left: 20px;
+}
+
+.new_car {
+    background-image: linear-gradient(to right, #666666 0%, #818181 100%);
+    width: 73px;
+    height: 38px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: row;
+    font-size: 14px;
+    font-weight: 500;
+    color: #fff;
+    padding: 0;
+    border-radius: 8px;
+}
+
+.new_car.used {
+    background: #FC1818;
+}
+
+.new_car.export,
+.new_car.explore {
+    background: #0887E3;
+}
+
+[dir="rtl"] .about_us .first_section .desc {
+    all: unset !important;
+    text-align: start !important;
+    font-size: 15px !important;
+    color: #616161 !important;
+    line-height: 2rem !important;
+}
+[dir="rtl"]  .car_details .slider_boxes .sliders .spec .content_con .col_con .label_number{
+    float: inline-start;
+}

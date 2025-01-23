@@ -1,0 +1,52 @@
+@use '../abstracts/' as *;
+
+
+/*extend*/
+%transition {
+    transition: all 0.3s ease;
+}
+
+
+
+
+.btn {
+    width: 470px;
+    height: 60px;
+
+    @include flex(row);
+
+
+    font-size: 17px;
+
+    font-weight: 600;
+
+
+
+    background-color: $secondary-color;
+
+    color: $white-primary;
+    border: none;
+    border-radius: 6px;
+    margin-top: 1rem;
+    &:hover{
+
+
+        background-color:$primary-green !important;
+    }
+
+
+}
+
+.btn2 {
+
+    @extend .btn;
+
+    background-color: $primary-green  $secondary-color;
+    color: $white-primary;
+    &:hover{
+
+        color: $white-primary;
+        background-color:$secondary-color ;
+    }
+
+}

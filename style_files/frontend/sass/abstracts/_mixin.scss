@@ -1,0 +1,120 @@
+// center flex mixin with diffenrt direction 
+@mixin flex ($direction ) {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: $direction;
+}
+
+
+
+///grid mixin center and you can choode the number of cols 
+@mixin grid ($col_Num ) {
+    display: grid;
+    align-items: center;
+    justify-content: center;
+    grid-template-columns: repeat($col_Num , 1fr);
+}
+
+
+
+//card mixin 
+@mixin card($width , $height , $bgColor) {
+
+    cursor: pointer;
+    background-color: $bgColor;
+    max-width: $width;
+    height: $height ;
+    padding: 2rem;
+}
+
+
+
+///mixin for media qurey 
+@mixin breakPoint($point) {
+    @if $point <=400px {
+        @media screen and (max-width: $point) {
+            @content;
+        }
+    }
+
+    @if $point <=746px {
+        @media screen and (max-width: $point) {
+            @content;
+        }
+    }
+
+    @else if $point <=1023px {
+        @media screen and (max-width: $point) {
+            @content;
+        }
+    }
+
+    @else if $point <=1280px {
+        @media screen and (max-width: $point) {
+            @content;
+        }
+    }
+}
+
+@mixin customRange($minPoint   ,  $maxPoint) {
+    @media (min-width: $minPoint) and (max-width: $maxPoint) {
+        @content;
+    }
+}
+
+
+
+@mixin cardbg ($path , $width , $height ) {
+    background-image: url($path);
+
+    background-size: $width $height;
+    background-repeat: no-repeat;
+
+}
+
+// p styels 
+
+
+@mixin descStyels () {
+
+
+    color: #606060;
+
+    line-height: 30px;
+
+    font-size: 15px;
+}
+
+//contact us btn
+
+
+@mixin contactBtn () {
+    background-color: #F79D3E;
+
+    color: #ffff;
+
+    font-weight: bold;
+
+    width: 269px;
+
+    height: 66px;
+
+
+    text-decoration: none;
+
+    border-radius: 10px;
+
+
+    font-size: 18px;
+
+     @include grid(0);
+
+     @include breakPoint (746px) {
+
+
+        width: unset;
+  
+      }
+   
+}
