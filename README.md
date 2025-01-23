@@ -95,6 +95,8 @@ php artisan migrate
 php artisan db:seed
 
 7.**Compile Front-End Assets: If your project has front-end assets, run**:
+npm install
+npm run build
 npm run dev
 8.**Run the Development Server: Start the application**:
 php artisan serve
